@@ -38,7 +38,6 @@ public class LstmTrainingConfig {
     @Bean
     public Step busWeatherDataStep(FlatFileItemReader<BusWeatherData> reader,
                                    BusWeatherDataItemWriter writer) {
-        log.info("==========start reader========");
         return new StepBuilder("busWeatherDataStep", jobRepository)
                 .<BusWeatherData,BusWeatherData>chunk(10, platformTransactionManager)
                 .reader(reader)
@@ -55,6 +54,7 @@ public class LstmTrainingConfig {
     public static class BusWeatherDataItemWriter implements ItemWriter<BusWeatherData> {
         @Override
         public void write(Chunk<? extends BusWeatherData> chunk) throws Exception {
+            log.info("=========== {}", chunk.size());
             for (BusWeatherData data : chunk) {
                 log.info("Processing busWeatherData: {}", data);
             }
