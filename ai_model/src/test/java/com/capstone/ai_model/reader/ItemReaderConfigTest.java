@@ -4,7 +4,6 @@ import com.capstone.ai_model.dto.BusWeatherData;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.test.context.SpringBatchTest;
@@ -31,7 +30,11 @@ class ItemReaderConfigTest {
         BusWeatherData item = reader.read();
 
         assertThat(item).isNotNull();
+        assertThat(item.getBusStatId()).isEqualTo(1165);
+        assertThat(item.getDate()).isEqualTo("20241202");
         assertThat(item.getBusName()).isEqualTo("문흥18");
+        assertThat(item.getBusStopName()).isEqualTo("장등동");
+        assertThat(item.getMorning_avg_temp_c()).isEqualTo(4.75);
 
         reader.close();
     }
