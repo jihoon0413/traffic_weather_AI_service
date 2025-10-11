@@ -8,12 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorSupport;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-
 @Configuration
 public class ItemReaderConfig {
 
@@ -32,17 +26,17 @@ public class ItemReaderConfig {
                 .targetType(BusWeatherData.class)
                 .linesToSkip(1)
                 .strict(true)
-                .customEditors(Map.of(LocalDateTime.class, dateTimeEditor()))
+//                .customEditors(Map.of(LocalDate.class, dateTimeEditor()))
                 .build();
     }
 
-    private PropertyEditor dateTimeEditor() {
-        return new PropertyEditorSupport() {
-            @Override
-            public void setAsText(String text) throws IllegalArgumentException {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-                setValue(LocalDateTime.parse(text, formatter));
-            }
-        };
-    }
+//    private PropertyEditor dateTimeEditor() {
+//        return new PropertyEditorSupport() {
+//            @Override
+//            public void setAsText(String text) throws IllegalArgumentException {
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//                setValue(LocalDate.parse(text, formatter));
+//            }
+//        };
+//    }
 }
