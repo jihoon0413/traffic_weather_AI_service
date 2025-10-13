@@ -49,7 +49,7 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
         int eveningCongestion = preCongestion.getOrDefault(eveningKey, 0) + item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers();
 
         // TODO: 하차시 카드를 찍지 않는 경우 보정 필요
-        log.info("morningCongestion {} : {}", morningKey , morningCongestion);
+//        log.info("morningCongestion {} : {}", morningKey , morningCongestion);
         preCongestion.put(morningKey, morningCongestion);
         preCongestion.put(eveningKey, eveningCongestion);
 
@@ -78,7 +78,6 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
         String json = new ObjectMapper().writeValueAsString(statIdMap);
         // 버스 추가시 버스코드 Map 추가
         // TODO: 정규화, 임베딩에 필요한 데이터를 외부에 공유할 수 있는 방법 고민하기
-//        log.info("===================== {}" , json);
 
         context.putString("statIdMapJson", json);
         context.putInt("maxCongestion", maxCongestion);

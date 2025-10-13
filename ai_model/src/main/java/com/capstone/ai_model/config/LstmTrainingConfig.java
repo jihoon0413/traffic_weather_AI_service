@@ -75,7 +75,7 @@ public class LstmTrainingConfig {
         public void write(Chunk<?> chunk) throws Exception {
             for (Object data : chunk) {
                 if(data instanceof TrainingData) {
-//                    log.info("data : {}", data);
+                    log.info("data : {}", data);
                 }
             }
         }

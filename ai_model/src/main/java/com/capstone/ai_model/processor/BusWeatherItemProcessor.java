@@ -39,7 +39,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
 
         String morningKey = buildKey(item)+"morning";
         String eveningKey = buildKey(item)+"evening";
-        int featureSize = 3 + 5 + 1 + 1 + 1 + 3; //년월일, 요일, 버스ID, 정류장ID, 출퇴근시간 TODO: 날씨 데이터 포함
+        int featureSize = 3 + 5 + 1 + 1 + 1 + 3; //년월일, 요일, 버스ID, 정류장ID, 출퇴근시간, 온도, 1시간 강수량, 적설량
 
 
         double[] morningFeature = new double[featureSize];
