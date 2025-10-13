@@ -28,7 +28,6 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
     private final Map<String, Integer> preCongestion = new ConcurrentHashMap<>();
 
     private int maxCongestion;
-    private int minCongestion;
     private double maxTemp;
     private double minTemp;
     private double maxPrecip;
@@ -98,8 +97,8 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
         preCongestion.put(morningKey, morningCongestion + item.getCommuteOnPassengers() - item.getCommuteOffPassengers());
         preCongestion.put(eveningKey, eveningCongestion + item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers());
 
-        int normalizedMorningCongestion = (morningCongestion - minCongestion)/(maxCongestion - minCongestion);
-        int normalizedEveningCongestion = (eveningCongestion - minCongestion)/(maxCongestion - minCongestion);
+        double normalizedMorningCongestion = (double) morningCongestion /maxCongestion;
+        double normalizedEveningCongestion = (double) eveningCongestion /maxCongestion;
 
         return new TrainingData(morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
     }
@@ -110,7 +109,6 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
         String json = context.getString("statIdMapJson");
         this.statIdMap = new ObjectMapper().readValue(json, new TypeReference<>(){});
         this.maxCongestion = context.getInt("maxCongestion");
-        this.minCongestion = context.getInt("minCongestion");
         this.maxTemp = context.getDouble("maxTemp");
         this.minTemp = context.getDouble("minTemp");
         this.maxPrecip = context.getDouble("maxPrecip");

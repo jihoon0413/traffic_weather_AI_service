@@ -7,7 +7,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class TrainingData {
     double[] morningFeature;
-    int morningCongestion;
+    double morningCongestion;
     double[] eveningFeature;
-    int eveningCongestion;
+    double eveningCongestion;
 }

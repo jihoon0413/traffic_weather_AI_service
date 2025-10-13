@@ -28,7 +28,6 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
     private final Map<String, Integer> preCongestion = new ConcurrentHashMap<>();
 
     private int maxCongestion = Integer.MIN_VALUE;
-    private int minCongestion = Integer.MAX_VALUE;
 
     private double maxTemp = Integer.MIN_VALUE;
     private double minTemp = Integer.MAX_VALUE;
@@ -54,7 +53,6 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
         preCongestion.put(eveningKey, eveningCongestion);
 
         maxCongestion = Math.max(maxCongestion, Math.max(morningCongestion, eveningCongestion));
-        minCongestion = Math.min(minCongestion, Math.min(morningCongestion, eveningCongestion));
 
         //날씨 데이터 min, max
         maxTemp = Math.max(maxTemp, Math.max(item.getMorning_avg_temp_c(), item.getEvening_avg_temp_c()));
@@ -81,7 +79,6 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
 
         context.putString("statIdMapJson", json);
         context.putInt("maxCongestion", maxCongestion);
-        context.putInt("minCongestion", minCongestion);
         context.putDouble("maxTemp", maxTemp);
         context.putDouble("minTemp", minTemp);
         context.putDouble("maxPrecip", maxPrecip);
