@@ -1,6 +1,9 @@
 package com.capstone.ai_model.config;
 
 import com.capstone.ai_model.dto.BusWeatherData;
+import com.capstone.ai_model.dto.TrainingData;
+import com.capstone.ai_model.processor.BusWeatherItemProcessor;
+import com.capstone.ai_model.processor.DataPreProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -12,6 +15,7 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,20 +33,35 @@ public class LstmTrainingConfig {
 
 
     @Bean
-    public Job busWeatherDataJob(Step busWeatherDataStep) {
+    public Job busWeatherDataJob(@Qualifier("busWeatherDataPreStep") Step busWeatherDataPreStep,
+                                 @Qualifier("busWeatherDataStep") Step busWeatherDataStep) {
         return new JobBuilder("busWeatherDataJob", jobRepository)
-                .start(busWeatherDataStep)
+                .start(busWeatherDataPreStep)
+                .next(busWeatherDataStep)
                 .build();
     }
 
-    @Bean
+    @Bean // 정규화 임베딩에 필요한 데이터 준비하는 Step
+    public Step busWeatherDataPreStep(FlatFileItemReader<BusWeatherData> reader,
+                                      DataPreProcessor processor,
+                                      BusWeatherDataItemWriter writer) {
+        return new StepBuilder("busWeatherDataPreStep", jobRepository)
+                .<BusWeatherData, BusWeatherData>chunk(10, platformTransactionManager)
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean // INDArray로 바꾸기 위해 정규화, 임베딩 처리 Step
     public Step busWeatherDataStep(FlatFileItemReader<BusWeatherData> reader,
+                                   BusWeatherItemProcessor processor,
                                    BusWeatherDataItemWriter writer) {
         return new StepBuilder("busWeatherDataStep", jobRepository)
-                .<BusWeatherData,BusWeatherData>chunk(10, platformTransactionManager)
+                .<BusWeatherData, TrainingData>chunk(10, platformTransactionManager)
                 .reader(reader)
+                .processor(processor)
                 .writer(writer)
-                // TODO : processor 추가
                 .build();
     }
 
@@ -51,12 +70,13 @@ public class LstmTrainingConfig {
         return new BusWeatherDataItemWriter();
     }   //TODO: writer 개발
 
-    public static class BusWeatherDataItemWriter implements ItemWriter<BusWeatherData> {
+    public static class BusWeatherDataItemWriter implements ItemWriter<Object> {
         @Override
-        public void write(Chunk<? extends BusWeatherData> chunk) throws Exception {
-            log.info("=========== {}", chunk.size());
-            for (BusWeatherData data : chunk) {
-                log.info("Processing busWeatherData: {}", data);
+        public void write(Chunk<?> chunk) throws Exception {
+            for (Object data : chunk) {
+                if(data instanceof TrainingData) {
+//                    log.info("data : {}", data);
+                }
             }
         }
     }
