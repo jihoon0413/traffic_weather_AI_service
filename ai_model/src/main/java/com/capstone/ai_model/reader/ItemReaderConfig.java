@@ -26,7 +26,7 @@ public class ItemReaderConfig {
                 .encoding("UTF-8")
                 .delimited()
                 .names("busStatId", "seq", "busStopName", "busId", "busName", "date",
-                        "commuteOnPassengers", "commuteOffPassengers", "offPeakOnPassengers", "offPeakOffPassengers",
+                        "commuteOnPassengers", "offPeakOnPassengers", "commuteOffPassengers", "offPeakOffPassengers",
                         "morning_avg_temp_c", "morning_avg_precip_mm", "morning_avg_snow_cm",
                         "evening_avg_temp_c", "evening_avg_precip_mm", "evening_avg_snow_cm")
                 .targetType(BusWeatherData.class)

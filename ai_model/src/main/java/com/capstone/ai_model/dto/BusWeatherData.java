@@ -18,8 +18,8 @@ public class BusWeatherData {
     private String busName;
     private LocalDate date;
     private int commuteOnPassengers;
-    private int commuteOffPassengers;
     private int offPeakOnPassengers;
+    private int commuteOffPassengers;
     private int offPeakOffPassengers;
     private double morning_avg_temp_c;
     private double morning_avg_precip_mm;
