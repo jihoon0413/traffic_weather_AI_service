@@ -1,7 +1,7 @@
 package com.capstone.ai_model.processor;
 
 import com.capstone.ai_model.dto.BusWeatherData;
-import com.capstone.ai_model.dto.TrainingData;
+import com.capstone.ai_model.dto.FeatureCongestionData;
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
 import org.nd4j.shade.jackson.core.type.TypeReference;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @JobScope
-public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, TrainingData> {
+public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, FeatureCongestionData> {
 
     private static final List<String> DAYS = List.of("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY");
     private Map<Integer, Integer> statIdMap = new ConcurrentHashMap<>();
@@ -34,11 +34,11 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
     private double maxSnow;
 
     @Override
-    public TrainingData process(BusWeatherData item) throws Exception {
+    public FeatureCongestionData process(BusWeatherData item) throws Exception {
 
         String morningKey = buildKey(item)+"morning";
         String eveningKey = buildKey(item)+"evening";
-        int featureSize = 3 + 5 + 1 + 1 + 1 + 3; //년월일, 요일, 버스ID, 정류장ID, 출퇴근시간, 온도, 1시간 강수량, 적설량
+        int featureSize = 5 + 5 + 1 + 1 + 2 + 3; //년월일, 요일, 버스ID, 정류장ID, 출퇴근시간, 온도, 1시간 강수량, 적설량
 
 
         double[] morningFeature = new double[featureSize];
@@ -47,7 +47,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
 
         LocalDate localDate = item.getDate();
 
-        double[] dateEmbed = normalizeDate(localDate);
+        double[] dateEmbed = normalizeDate(localDate); // 년, 월(sin, cos), 계절(여름, 겨울)
         System.arraycopy(dateEmbed, 0, morningFeature, idx, dateEmbed.length);
         System.arraycopy(dateEmbed, 0, eveningFeature, idx, dateEmbed.length);
         idx += dateEmbed.length;
@@ -57,19 +57,22 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
         System.arraycopy(oneHot, 0, eveningFeature, idx, oneHot.length);
         idx += oneHot.length;
 
-        // 버스Id 추후에 여러개의 버스 학습시 임베딩 필요
+        // 버스Id 추후에 여러개의 버스 학습시 임베딩을 위한 매핑 과정 필요
         morningFeature[idx] = item.getBusId();
         eveningFeature[idx] = item.getBusId();
         idx++;
 
-        // stopId TODO: embedding 작업
-        int statId = statIdMap.get(item.getBusStatId());
-        morningFeature[idx] = statId;
-        eveningFeature[idx] = statId;
+        // statId TODO: LSTM 모델이 임베딩할 수 있도록 EmbeddingLayer 추가 필요
+        int statIndex = item.getSeq(); // 정류장의 순서가 사실장 index역할 추가적인 매핑이 필요 없음
+        morningFeature[idx] = statIndex;
+        eveningFeature[idx] = statIndex;
         idx++;
 
         // morning,evening
-        morningFeature[idx] = 0;
+        morningFeature[idx] = 1;  // 아침 시간대일 때
+        eveningFeature[idx] = 0;
+        idx++;
+        morningFeature[idx] = 0; // 저녁 시간대일 때
         eveningFeature[idx] = 1;
         idx++;
 
@@ -94,13 +97,15 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
         int morningCongestion = preCongestion.getOrDefault(morningKey, 0);
         int eveningCongestion = preCongestion.getOrDefault(eveningKey, 0);
 
+
+
         preCongestion.put(morningKey, morningCongestion + item.getCommuteOnPassengers() - item.getCommuteOffPassengers());
         preCongestion.put(eveningKey, eveningCongestion + item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers());
 
         double normalizedMorningCongestion = (double) morningCongestion /maxCongestion;
         double normalizedEveningCongestion = (double) eveningCongestion /maxCongestion;
 
-        return new TrainingData(morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
+        return new FeatureCongestionData(item.getDate(), morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
     }
 
     @BeforeStep
@@ -125,17 +130,21 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Tr
     private double[] normalizeDate(LocalDate localDate) {
         int year = localDate.getYear();
         int month = localDate.getMonthValue();
-        int day = localDate.getDayOfMonth();
 
         double yearNormal = (year - 2000) / 100.0;
-        double monthNormal = month / 12.0;
-        double dayNormal = day / 31.0;
+        double monthSin = Math.sin(2 * Math.PI * month / 12.0);
+        double monthCos = Math.cos(2 * Math.PI * month / 12.0);
+        double seasonSummer = (month >= 6 && month <= 8) ? 1.0 : 0.0;
+        double seasonWinter = (month == 12 || month == 1 || month == 2) ? 1.0 : 0.0;
 
-        double[] normalizedDate = new double[3];
+        double[] normalizedDate = new double[5];
 
         normalizedDate[0] = yearNormal;
-        normalizedDate[1] = monthNormal;
-        normalizedDate[2] = dayNormal;
+        normalizedDate[1] = monthSin;
+        normalizedDate[2] = monthCos;
+        normalizedDate[3] = seasonSummer;
+        normalizedDate[4] = seasonWinter;
+
         return normalizedDate;
     }
 
