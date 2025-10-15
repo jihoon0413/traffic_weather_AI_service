@@ -62,11 +62,6 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
 
         maxSnow = Math.max(maxSnow, Math.max(item.getMorning_avg_snow_cm(), item.getEvening_avg_snow_cm()));
 
-        // 정류장 indexing
-            int idxCode = statIdMap.computeIfAbsent(item.getBusStatId(), k -> idx.getAndIncrement());
-            statIdMap.put(item.getBusStatId(), idxCode);
-
-
         return item;
     }
 
