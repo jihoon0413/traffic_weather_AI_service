@@ -33,7 +33,7 @@ class ItemReaderConfigTest {
         assertThat(item.getBusStatId()).isEqualTo(1165);
         assertThat(item.getDate()).isEqualTo("20241202");
         assertThat(item.getBusName()).isEqualTo("문흥18");
-        assertThat(item.getBusStopName()).isEqualTo("장등동");
+        assertThat(item.getBusStatName()).isEqualTo("장등동");
         assertThat(item.getMorning_avg_temp_c()).isEqualTo(4.75);
 
         reader.close();

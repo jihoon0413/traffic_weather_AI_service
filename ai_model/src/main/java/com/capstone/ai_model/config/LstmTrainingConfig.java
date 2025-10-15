@@ -1,7 +1,7 @@
 package com.capstone.ai_model.config;
 
 import com.capstone.ai_model.dto.BusWeatherData;
-import com.capstone.ai_model.dto.TrainingData;
+import com.capstone.ai_model.dto.FeatureCongestionData;
 import com.capstone.ai_model.processor.BusWeatherItemProcessor;
 import com.capstone.ai_model.processor.DataPreProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,7 @@ public class LstmTrainingConfig {
                                    BusWeatherItemProcessor processor,
                                    BusWeatherDataItemWriter writer) {
         return new StepBuilder("busWeatherDataStep", jobRepository)
-                .<BusWeatherData, TrainingData>chunk(10, platformTransactionManager)
+                .<BusWeatherData, FeatureCongestionData>chunk(10, platformTransactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -74,7 +74,7 @@ public class LstmTrainingConfig {
         @Override
         public void write(Chunk<?> chunk) throws Exception {
             for (Object data : chunk) {
-                if(data instanceof TrainingData) {
+                if(data instanceof FeatureCongestionData) {
                     log.info("data : {}", data);
                 }
             }
