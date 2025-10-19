@@ -1,6 +1,7 @@
 package com.capstone.ai_model.reader;
 
 import com.capstone.ai_model.dto.BusWeatherData;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
@@ -15,7 +16,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor
 public class ItemReaderConfig {
+
+    private final DateTimeFormatter formatter;
 
     @Bean
     @StepScope
@@ -40,7 +44,6 @@ public class ItemReaderConfig {
         return new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
                 setValue(LocalDate.parse(text, formatter));
             }
         };

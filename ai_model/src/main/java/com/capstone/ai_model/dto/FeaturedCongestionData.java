@@ -27,25 +27,19 @@ public class FeaturedCongestionData {
     private double snow;
     private double congestion;
 
-    public static FeaturedCongestionData ofMorning(FeatureData data) {
+    public static FeaturedCongestionData ofMorning(FeatureData data, DateTimeFormatter formatter) {
         double[] temp = data.getMorningFeature();
-        DateTimeFormatter formatter = getFormatter();
 
         return new FeaturedCongestionData(formatter.format(data.getDate()), temp[0], temp[1], temp[2], temp[3], temp[4], temp[5],
                 temp[6], temp[7], temp[8], temp[9], temp[10], temp[11],
                 temp[12], temp[13], temp[14], temp[15], temp[16], data.getMorningCongestion());
     }
 
-    public static FeaturedCongestionData ofEvening(FeatureData data) {
+    public static FeaturedCongestionData ofEvening(FeatureData data, DateTimeFormatter formatter) {
         double[] temp = data.getEveningFeature();
-        DateTimeFormatter formatter = getFormatter();
         return new FeaturedCongestionData(formatter.format(data.getDate()), temp[0], temp[1], temp[2], temp[3], temp[4], temp[5],
                 temp[6], temp[7], temp[8], temp[9], temp[10], temp[11],
                 temp[12], temp[13], temp[14], temp[15], temp[16], data.getEveningCongestion());
-    }
-
-    private static DateTimeFormatter getFormatter() {
-        return DateTimeFormatter.ofPattern("yyyyMMdd");
     }
 
 }
