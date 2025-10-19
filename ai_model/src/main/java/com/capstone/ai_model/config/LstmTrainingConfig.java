@@ -1,9 +1,10 @@
 package com.capstone.ai_model.config;
 
 import com.capstone.ai_model.dto.BusWeatherData;
-import com.capstone.ai_model.dto.FeatureCongestionData;
+import com.capstone.ai_model.dto.FeatureData;
 import com.capstone.ai_model.processor.BusWeatherItemProcessor;
 import com.capstone.ai_model.processor.DataPreProcessor;
+import com.capstone.ai_model.writer.TrainingDataWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -56,9 +57,9 @@ public class LstmTrainingConfig {
     @Bean // INDArray로 바꾸기 위해 정규화, 임베딩 처리 Step
     public Step busWeatherDataStep(FlatFileItemReader<BusWeatherData> reader,
                                    BusWeatherItemProcessor processor,
-                                   BusWeatherDataItemWriter writer) {
+                                   TrainingDataWriter writer) {
         return new StepBuilder("busWeatherDataStep", jobRepository)
-                .<BusWeatherData, FeatureCongestionData>chunk(10, platformTransactionManager)
+                .<BusWeatherData, FeatureData>chunk(10, platformTransactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -74,7 +75,7 @@ public class LstmTrainingConfig {
         @Override
         public void write(Chunk<?> chunk) throws Exception {
             for (Object data : chunk) {
-                if(data instanceof FeatureCongestionData) {
+                if(data instanceof FeatureData) {
                     log.info("data : {}", data);
                 }
             }
