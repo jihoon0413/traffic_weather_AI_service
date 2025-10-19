@@ -22,7 +22,7 @@ public class ItemReaderConfig {
     public FlatFileItemReader<BusWeatherData> busWeatherDataItemReader() {
         return new FlatFileItemReaderBuilder<BusWeatherData>()
                 .name("BusWeatherDataItemReader")
-                .resource(new ClassPathResource("busWeatherData.csv"))
+                .resource(new ClassPathResource("data/busWeatherData.csv"))
                 .encoding("UTF-8")
                 .delimited()
                 .names("busStatId", "seq", "busStopName", "busId", "busName", "date",
