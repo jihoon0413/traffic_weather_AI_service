@@ -2,11 +2,11 @@ package com.capstone.ai_model.dto;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.ToString;
+import lombok.Data;
 
-@ToString
+@Data
 @AllArgsConstructor
-public class FeatureCongestionData {
+public class FeatureData {
     LocalDate date;
     double[] morningFeature;
     double morningCongestion;

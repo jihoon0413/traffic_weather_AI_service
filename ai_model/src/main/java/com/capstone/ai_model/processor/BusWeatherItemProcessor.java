@@ -1,7 +1,7 @@
 package com.capstone.ai_model.processor;
 
 import com.capstone.ai_model.dto.BusWeatherData;
-import com.capstone.ai_model.dto.FeatureCongestionData;
+import com.capstone.ai_model.dto.FeatureData;
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
 import org.nd4j.shade.jackson.core.type.TypeReference;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @JobScope
-public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, FeatureCongestionData> {
+public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, FeatureData> {
 
     private static final List<String> DAYS = List.of("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY");
     private Map<Integer, Integer> statIdMap = new ConcurrentHashMap<>();
@@ -34,7 +34,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
     private double maxSnow;
 
     @Override
-    public FeatureCongestionData process(BusWeatherData item) throws Exception {
+    public FeatureData process(BusWeatherData item) throws Exception {
 
         String morningKey = buildKey(item)+"morning";
         String eveningKey = buildKey(item)+"evening";
@@ -105,7 +105,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         double normalizedMorningCongestion = (double) morningCongestion /maxCongestion;
         double normalizedEveningCongestion = (double) eveningCongestion /maxCongestion;
 
-        return new FeatureCongestionData(item.getDate(), morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
+        return new FeatureData(item.getDate(), morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
     }
 
     @BeforeStep
