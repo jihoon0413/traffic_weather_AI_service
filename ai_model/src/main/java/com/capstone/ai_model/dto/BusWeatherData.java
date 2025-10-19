@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 public class BusWeatherData {
     private int busStatId;
     private int seq;
-    private String busStopName;
+    private String busStatName;
     private int busId;
     private String busName;
     private LocalDate date;
