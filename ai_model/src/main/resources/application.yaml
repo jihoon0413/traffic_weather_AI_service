@@ -1,12 +1,16 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
+    username: user
     password: password
-  batch:
-    jdbc:
-      initialize-schema: always
-  sql:
-    init:
-      mode: always
+    url: jdbc:postgresql://localhost:5432/ai_db
+  jpa:
+    defer-datasource-initialization: true
+    hibernate.ddl-auto: create
+    show-sql: true
+    open-in-view: false
+#  sql:
+#    init:
+#      mode: never
+#  batch:
+#    jdbc:
+#      initialize-schema: never

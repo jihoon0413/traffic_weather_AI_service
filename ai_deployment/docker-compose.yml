@@ -1,0 +1,11 @@
+services:
+  ai_db:
+    image: "postgres:14.12"
+    container_name: ai_db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=ai_db
+
