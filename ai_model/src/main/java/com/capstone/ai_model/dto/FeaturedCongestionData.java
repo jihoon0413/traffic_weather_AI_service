@@ -7,9 +7,11 @@ import jakarta.persistence.Id;
 import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@NoArgsConstructor
 @AllArgsConstructor
 public class FeaturedCongestionData {
 
@@ -17,8 +19,8 @@ public class FeaturedCongestionData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String date;
-    private double year;
+    private String record_date;
+    private double year_value;
     private double monthSin;
     private double monthCos;
     private double summer;
