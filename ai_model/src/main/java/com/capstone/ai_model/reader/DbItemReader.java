@@ -1,11 +1,9 @@
 package com.capstone.ai_model.reader;
 
 import com.capstone.ai_model.dto.FeaturedCongestionData;
-import java.util.Map;
 import javax.sql.DataSource;
-import org.springframework.batch.item.database.JdbcPagingItemReader;
-import org.springframework.batch.item.database.Order;
-import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -14,16 +12,16 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 public class DbItemReader {
 
     @Bean
-    public JdbcPagingItemReader<FeaturedCongestionData> jdbcPagingItemReader(DataSource dataSource) {
-        return new JdbcPagingItemReaderBuilder<FeaturedCongestionData>()
+    public JdbcCursorItemReader<FeaturedCongestionData> jdbcPagingItemReader(DataSource dataSource) {
+        return new JdbcCursorItemReaderBuilder<FeaturedCongestionData>()
                 .name("dbItemReader")
                 .dataSource(dataSource)
-                .selectClause("*")
-                .fromClause("featured_congestion_data")
-                .sortKeys(Map.of("stat_idx", Order.ASCENDING, "record_date", Order.ASCENDING, "morning", Order.DESCENDING))
+                .sql("""
+                    SELECT *
+                    FROM featured_congestion_data
+                    ORDER BY stat_idx ASC, record_date ASC, morning DESC
+                """)
                 .rowMapper(new BeanPropertyRowMapper<>(FeaturedCongestionData.class))
-                .pageSize(10)
                 .build();
     }
-
 }
