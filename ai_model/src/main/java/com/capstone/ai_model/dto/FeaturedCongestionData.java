@@ -31,7 +31,7 @@ public class FeaturedCongestionData {
     private double thursday;
     private double friday;
     private double busId;
-    private double statIdx;
+    private double stat_idx;
     private double morning;
     private double evening;
     private double temp;

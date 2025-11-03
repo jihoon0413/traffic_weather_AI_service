@@ -20,7 +20,7 @@ public class DbItemReader {
                 .dataSource(dataSource)
                 .selectClause("*")
                 .fromClause("featured_congestion_data")
-                .sortKeys(Map.of("stat_idx", Order.ASCENDING, "morning", Order.DESCENDING, "record_date", Order.ASCENDING))
+                .sortKeys(Map.of("stat_idx", Order.ASCENDING, "record_date", Order.ASCENDING, "morning", Order.DESCENDING))
                 .rowMapper(new BeanPropertyRowMapper<>(FeaturedCongestionData.class))
                 .pageSize(10)
                 .build();

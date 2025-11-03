@@ -4,7 +4,8 @@ import com.capstone.ai_model.dto.BusWeatherData;
 import com.capstone.ai_model.dto.FeatureData;
 import com.capstone.ai_model.processor.BusWeatherItemProcessor;
 import com.capstone.ai_model.processor.DataPreProcessor;
-import com.capstone.ai_model.writer.TrainingDataWriter;
+import com.capstone.ai_model.writer.GenerateCongestionDataWriter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -57,7 +58,7 @@ public class GenerateCongestionDataConfig {
     @Bean // INDArray로 바꾸기 위해 정규화, 임베딩 처리 Step
     public Step busWeatherDataStep(FlatFileItemReader<BusWeatherData> reader,
                                    BusWeatherItemProcessor processor,
-                                   TrainingDataWriter writer) {
+                                   GenerateCongestionDataWriter writer) {
         return new StepBuilder("busWeatherDataStep", jobRepository)
                 .<BusWeatherData, FeatureData>chunk(10, platformTransactionManager)
                 .reader(reader)
@@ -76,7 +77,7 @@ public class GenerateCongestionDataConfig {
         public void write(Chunk<?> chunk) throws Exception {
             for (Object data : chunk) {
                 if(data instanceof FeatureData) {
-                    log.info("data : {}", data);
+//                    log.info("data : {}", data);
                 }
             }
         }
