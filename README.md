@@ -43,3 +43,9 @@ Deeplearning4j 기반 LSTM(Long Short-Term Memory) 모델을 학습시켰습니�
 * 예측 결과 대시보드 구축
 * 모델 정확도 측정 및 성능 개선
 
+# 🪛 스택
+![js](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![js](https://img.shields.io/badge/Spring_Batch-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![js](https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![js](https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=pink)
+
