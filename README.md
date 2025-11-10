@@ -19,16 +19,19 @@ Deeplearning4j 기반 LSTM(Long Short-Term Memory) 모델을 학습시켰습니�
 | **Jupyter / Visualization Tool** | 예측 결과 시각화     ( * 진행 예정) |
 
 
+# 🖼️ 학습 데이터
 <details>
-<summary>토글 접기/펼치기</summary>
+<summary>학습 데이터 이미지</summary>
 <div markdown="1">
-승차 및 기상 데이터
 
-![img.png](img.png)
+  
+  * 승차 및 기상 데이터
+<img width="1275" height="484" alt="img" src="https://github.com/user-attachments/assets/871754c0-730b-4096-bf49-04a80c440fd9" />
 
-전치리를 거치 feature 데이터
 
-![img_1.png](img_1.png)
+  * 전치리를 거치 feature 데이터
+<img width="1432" height="619" alt="img_1" src="https://github.com/user-attachments/assets/02d8f52e-6ece-437d-b0e8-e04ca7120b76" />
+
 
 </div>
 </details>
