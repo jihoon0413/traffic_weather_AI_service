@@ -21,7 +21,7 @@ public class SaveCSVFileWriter {
                 .delimited()
                 .delimiter(",")
                 .sourceType(FeaturedCongestionData.class)
-                .names("date", "year", "monthSin", "monthCos", "summer", "winter",
+                .names("record_date", "year_value", "monthSin", "monthCos", "summer", "winter",
                         "monday", "tuesday", "wednesday", "thursday", "friday",
                         "busId", "statIdx", "morning", "evening",
                         "temp", "precip", "snow", "congestion")

@@ -6,11 +6,13 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate.ddl-auto: create
-    show-sql: true
+#    show-sql: true
     open-in-view: false
 #  sql:
 #    init:
 #      mode: never
-#  batch:
+  batch:
+    job:
+      enabled: false
 #    jdbc:
 #      initialize-schema: never

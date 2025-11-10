@@ -1,39 +1,39 @@
 package com.capstone.ai_model.writer;
 
-import com.capstone.ai_model.dto.FeatureData;
-import com.capstone.ai_model.dto.FeaturedCongestionData;
-import com.capstone.ai_model.repository.FeaturedDataRepository;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import com.capstone.ai_model.dto.LSTMInput;
+import java.io.File;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.MultiDataSet;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @StepScope
 @RequiredArgsConstructor
-public class TrainingDataWriter implements ItemWriter<FeatureData> {
+public class TrainingDataWriter implements ItemWriter<LSTMInput> {
 
-//    private final FlatFileItemWriter<FeaturedCongestionData> delegate;
-    private final DateTimeFormatter formatter;
-    private final FeaturedDataRepository featuredDataRepository;
+    private final MultiLayerNetwork model;
 
     @Override
-    public void write(Chunk<? extends FeatureData> chunk) throws Exception {
+    public void write(Chunk<? extends LSTMInput> chunk) throws Exception {
 
-        List<FeaturedCongestionData> saveList = new ArrayList<>();
-        for(FeatureData data : chunk) {
-            saveList.add(FeaturedCongestionData.ofMorning(data, formatter));
-            saveList.add(FeaturedCongestionData.ofEvening(data, formatter));
-
+        log.info("===============start training=============");
+        for (LSTMInput input : chunk) {
+//            MultiDataSet ds = new MultiDataSet(
+//                    new INDArray[]{input.getStatIdx(), input.getFeatures()},
+//                    new INDArray[]{input.getTargets()});
+            DataSet ds = new DataSet(input.getFeatures(), input.getTargets());
+            model.fit(ds);
         }
-        featuredDataRepository.saveAll(saveList);
+
+        model.save(new File("trained_lstm_model.zip"),true);
     }
 }
