@@ -29,7 +29,7 @@ Deeplearning4j 기반 LSTM(Long Short-Term Memory) 모델을 학습시켰습니�
 <img width="1275" height="484" alt="img" src="https://github.com/user-attachments/assets/871754c0-730b-4096-bf49-04a80c440fd9" />
 
 
-  * 전치리를 거치 feature 데이터
+  * 전치리를 거친 feature 데이터
 <img width="1432" height="619" alt="img_1" src="https://github.com/user-attachments/assets/02d8f52e-6ece-437d-b0e8-e04ca7120b76" />
 
 
