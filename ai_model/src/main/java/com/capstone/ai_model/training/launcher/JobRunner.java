@@ -1,4 +1,4 @@
-package com.capstone.ai_model.launcher;
+package com.capstone.ai_model.training.launcher;
 
 import lombok.AllArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -37,10 +37,10 @@ public class JobRunner implements CommandLineRunner {
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
 
-        JobExecution execution1 =jobLauncher.run(busWeatherDataJob, params);
-        while (execution1.isRunning()) {
-            Thread.sleep(1000); // 1초 대기
-        }
+//        JobExecution execution1 =jobLauncher.run(busWeatherDataJob, params);
+//        while (execution1.isRunning()) {
+//            Thread.sleep(1000); // 1초 대기
+//        }
         jobLauncher.run(trainingDataJob, params);
     }
 }

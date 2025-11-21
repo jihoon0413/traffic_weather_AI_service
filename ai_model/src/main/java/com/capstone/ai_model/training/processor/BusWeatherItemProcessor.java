@@ -1,7 +1,7 @@
-package com.capstone.ai_model.processor;
+package com.capstone.ai_model.training.processor;
 
-import com.capstone.ai_model.dto.BusWeatherData;
-import com.capstone.ai_model.dto.FeatureData;
+import com.capstone.ai_model.dto.training.BusWeatherData;
+import com.capstone.ai_model.dto.training.FeatureData;
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
 import org.nd4j.shade.jackson.core.type.TypeReference;
@@ -47,7 +47,8 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
 
         LocalDate localDate = item.getDate();
 
-        double[] dateEmbed = normalizeDate(localDate); // 년, 월(sin, cos), 계절(여름, 겨울)
+        // 년, 월(sin, cos), 계절(여름, 겨울)
+        double[] dateEmbed = normalizeDate(localDate);
         System.arraycopy(dateEmbed, 0, morningFeature, idx, dateEmbed.length);
         System.arraycopy(dateEmbed, 0, eveningFeature, idx, dateEmbed.length);
         idx += dateEmbed.length;
@@ -62,7 +63,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         eveningFeature[idx] = item.getBusId();
         idx++;
 
-        // statId TODO: LSTM 모델이 임베딩할 수 있도록 EmbeddingLayer 추가 필요
+        // statId
         int statIndex = item.getSeq(); // 정류장의 순서가 사실장 index역할 추가적인 매핑이 필요 없음
         morningFeature[idx] = statIndex;
         eveningFeature[idx] = statIndex;
@@ -76,7 +77,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         eveningFeature[idx] = 1;
         idx++;
 
-        // 날씨 데이터
+        // 기상 데이터
         morningFeature[idx] = (item.getMorning_avg_temp_c() - minTemp)/(maxTemp - minTemp);
         eveningFeature[idx] = (item.getEvening_avg_temp_c() - minTemp)/(maxTemp - minTemp);
         idx++;
@@ -104,6 +105,8 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
 
         double normalizedMorningCongestion = (double) morningCongestion /maxCongestion;
         double normalizedEveningCongestion = (double) eveningCongestion /maxCongestion;
+
+//        log.info("{} : {}, {} : {} ", morningKey, morningCongestion, eveningKey, eveningCongestion);
 
         return new FeatureData(item.getDate(), morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
     }

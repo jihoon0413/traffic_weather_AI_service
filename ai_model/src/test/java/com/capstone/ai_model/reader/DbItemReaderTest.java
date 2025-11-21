@@ -2,14 +2,13 @@ package com.capstone.ai_model.reader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.capstone.ai_model.dto.FeaturedCongestionData;
+import com.capstone.ai_model.dto.training.FeaturedCongestionData;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
-import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;

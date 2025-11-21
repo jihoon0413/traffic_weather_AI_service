@@ -1,6 +1,6 @@
 package com.capstone.ai_model.reader;
 
-import com.capstone.ai_model.dto.BusWeatherData;
+import com.capstone.ai_model.dto.training.BusWeatherData;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
