@@ -1,7 +1,7 @@
-package com.capstone.ai_model.writer;
+package com.capstone.ai_model.training.writer;
 
-import com.capstone.ai_model.dto.FeatureData;
-import com.capstone.ai_model.dto.FeaturedCongestionData;
+import com.capstone.ai_model.dto.training.FeatureData;
+import com.capstone.ai_model.dto.training.FeaturedCongestionData;
 import com.capstone.ai_model.repository.FeaturedDataRepository;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.stereotype.Component;
 
 @Slf4j

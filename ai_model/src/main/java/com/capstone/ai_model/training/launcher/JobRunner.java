@@ -1,4 +1,4 @@
-package com.capstone.ai_model.launcher;
+package com.capstone.ai_model.training.launcher;
 
 import lombok.AllArgsConstructor;
 import org.springframework.batch.core.Job;

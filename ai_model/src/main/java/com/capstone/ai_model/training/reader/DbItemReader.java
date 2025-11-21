@@ -1,6 +1,6 @@
-package com.capstone.ai_model.reader;
+package com.capstone.ai_model.training.reader;
 
-import com.capstone.ai_model.dto.FeaturedCongestionData;
+import com.capstone.ai_model.dto.training.FeaturedCongestionData;
 import javax.sql.DataSource;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;

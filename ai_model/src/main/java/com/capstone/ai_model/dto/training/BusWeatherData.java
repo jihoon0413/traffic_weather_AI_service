@@ -1,4 +1,4 @@
-package com.capstone.ai_model.dto;
+package com.capstone.ai_model.dto.training;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

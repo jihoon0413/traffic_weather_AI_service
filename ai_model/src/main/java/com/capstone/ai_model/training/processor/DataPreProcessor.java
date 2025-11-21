@@ -1,7 +1,7 @@
-package com.capstone.ai_model.processor;
+package com.capstone.ai_model.training.processor;
 
-import com.capstone.ai_model.dto.BusWeatherData;
-import lombok.Getter;
+import com.capstone.ai_model.dto.training.BusWeatherData;
+
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
 import org.nd4j.shade.jackson.databind.ObjectMapper;

@@ -1,6 +1,6 @@
-package com.capstone.ai_model.writer;
+package com.capstone.ai_model.training.writer;
 
-import com.capstone.ai_model.dto.FeaturedCongestionData;
+import com.capstone.ai_model.dto.training.FeaturedCongestionData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
@@ -23,7 +23,7 @@ public class SaveCSVFileWriter {
                 .sourceType(FeaturedCongestionData.class)
                 .names("record_date", "year_value", "monthSin", "monthCos", "summer", "winter",
                         "monday", "tuesday", "wednesday", "thursday", "friday",
-                        "busId", "statIdx", "morning", "evening",
+                        "busId", "stat_idx", "morning", "evening",
                         "temp", "precip", "snow", "congestion")
                 .build();
     }
