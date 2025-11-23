@@ -2,7 +2,7 @@ package com.capstone.ai_model.reader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.capstone.ai_model.dto.training.FeaturedCongestionData;
+import com.capstone.ai_model.domain.FeaturedCongestionData;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

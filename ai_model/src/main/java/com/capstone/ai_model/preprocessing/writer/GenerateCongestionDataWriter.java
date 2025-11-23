@@ -1,7 +1,7 @@
-package com.capstone.ai_model.training.writer;
+package com.capstone.ai_model.preprocessing.writer;
 
-import com.capstone.ai_model.dto.training.FeatureData;
-import com.capstone.ai_model.dto.training.FeaturedCongestionData;
+import com.capstone.ai_model.dto.FeatureData;
+import com.capstone.ai_model.domain.FeaturedCongestionData;
 import com.capstone.ai_model.repository.FeaturedDataRepository;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

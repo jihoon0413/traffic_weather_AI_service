@@ -1,6 +1,6 @@
-package com.capstone.ai_model.training.writer;
+package com.capstone.ai_model.preprocessing.writer;
 
-import com.capstone.ai_model.dto.training.FeaturedCongestionData;
+import com.capstone.ai_model.domain.FeaturedCongestionData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;

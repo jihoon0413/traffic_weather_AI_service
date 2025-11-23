@@ -1,6 +1,6 @@
-package com.capstone.ai_model.training.reader;
+package com.capstone.ai_model.preprocessing.reader;
 
-import com.capstone.ai_model.dto.training.BusWeatherData;
+import com.capstone.ai_model.dto.BusWeatherData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.FlatFileItemReader;

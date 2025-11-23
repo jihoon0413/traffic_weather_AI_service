@@ -1,4 +1,4 @@
-package com.capstone.ai_model.training.config;
+package com.capstone.ai_model.config;
 
 import java.time.format.DateTimeFormatter;
 import org.springframework.context.annotation.Bean;
