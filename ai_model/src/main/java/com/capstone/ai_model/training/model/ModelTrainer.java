@@ -1,6 +1,8 @@
 package com.capstone.ai_model.training.model;
 
 import com.capstone.ai_model.dto.LSTMInput;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +24,19 @@ public class ModelTrainer {
             List<LSTMInput> testSummer,
             List<LSTMInput> trainWinter,
             List<LSTMInput> testWinter
-    ) {
+    ) throws IOException {
         MultiDataSet trainData = mergeData(trainSummer, trainWinter);
 
-        for (int epoch = 0; epoch < 5; epoch++) {
+        for (int epoch = 0; epoch < 30; epoch++) {
             model.fit(trainData);
             System.out.println("Epoch = " + epoch + " 완료");
         }
 
-        modelEvaluator.evaluateSeason(model, buildDataSet(testSummer), "SUMMER");
-        modelEvaluator.evaluateSeason(model, buildDataSet(testWinter), "WINTER");
+        modelEvaluator.evaluateSeason(model, mergeData(testSummer, testWinter), "total");
+//        modelEvaluator.evaluateSeason(model, buildDataSet(testSummer), "SUMMER");
+//        modelEvaluator.evaluateSeason(model, buildDataSet(testWinter), "WINTER");
+
+        model.save(new File("trained_lstm_model.zip"),true);
     }
 
     private MultiDataSet mergeData(List<LSTMInput> trainSummer, List<LSTMInput> trainWinter) {
@@ -39,17 +44,17 @@ public class ModelTrainer {
         List<INDArray> featureList = new ArrayList<>();
         List<INDArray> targetList = new ArrayList<>();
 
+        for (LSTMInput input : trainWinter) {
+            stationList.add(input.getStatIdx());
+            featureList.add(input.getFeatures());
+            targetList.add(input.getTargets());
+        }
         for (LSTMInput input : trainSummer) {
 
             stationList.add(input.getStatIdx());
             featureList.add(input.getFeatures());
             targetList.add(input.getTargets());
 
-        }
-        for (LSTMInput input : trainWinter) {
-            stationList.add(input.getStatIdx());
-            featureList.add(input.getFeatures());
-            targetList.add(input.getTargets());
         }
 
         INDArray stationBatch = Nd4j.concat(0, stationList.toArray(new INDArray[0]));

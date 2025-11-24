@@ -40,14 +40,14 @@ public class LstmTrainingTasklet implements Tasklet {
         TrainTestSplit<FeaturedCongestionData> summerSplit = dataSplitter.splitSeasonByTime(summer);
         TrainTestSplit<FeaturedCongestionData> winterSplit = dataSplitter.splitSeasonByTime(winter);
 
-        // 3) LSTMInput 시퀀스로 변환 (슬라이딩 윈도우)
+//         3) LSTMInput 시퀀스로 변환 (슬라이딩 윈도우)
+//        List<LSTMInput> trainSummer = sequenceBuilder.buildSequencesByStation(summer);
         List<LSTMInput> trainSummer = sequenceBuilder.buildSequencesByStation(summerSplit.getTrain());
         List<LSTMInput> testSummer  = sequenceBuilder.buildSequencesByStation(summerSplit.getTest());
-        List<LSTMInput> trainWinter = sequenceBuilder.buildSequencesByStation(winterSplit.getTrain());
+        List<LSTMInput> trainWinter = sequenceBuilder.buildSequencesByStation(winter);
+//        List<LSTMInput> trainWinter = sequenceBuilder.buildSequencesByStation(winterSplit.getTrain());
         List<LSTMInput> testWinter  = sequenceBuilder.buildSequencesByStation(winterSplit.getTest());
 
-        System.out.println("trainSummerSeq size = " + trainSummer.size());
-        System.out.println("trainWinterSeq size = " + trainWinter.size());
 
         // 4) DL4J 모델 학습 및 시즌별 평가
         modelTrainer.trainAndEvaluate(trainSummer, testSummer, trainWinter, testWinter);

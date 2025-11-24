@@ -1,6 +1,7 @@
 package com.capstone.ai_model.training.model;
 
 import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
+import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.graph.MergeVertex;
 import org.deeplearning4j.nn.conf.graph.rnn.LastTimeStepVertex;
@@ -8,6 +9,7 @@ import org.deeplearning4j.nn.conf.layers.EmbeddingSequenceLayer;
 import org.deeplearning4j.nn.conf.layers.LSTM;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.deeplearning4j.nn.weights.WeightInit;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
@@ -20,7 +22,10 @@ public class LstmModel {
     @Bean
     public static ComputationGraph createLstmModel() {
         ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
-                .updater(new Adam(0.001))
+                .weightInit(WeightInit.XAVIER)
+                .updater(new Adam(0.003))
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
+                .gradientNormalizationThreshold(1.0)
                 .graphBuilder()
                 .addInputs("stationInput", "weatherInput")
                 .addLayer("stationEmbedding", new EmbeddingSequenceLayer.Builder()
@@ -29,7 +34,7 @@ public class LstmModel {
                         .build(), "stationInput")
                 .addVertex("concat", new MergeVertex(), "stationEmbedding", "weatherInput")
                 .addLayer("lstm", new LSTM.Builder()
-                        .nIn(36)
+                        .nIn(35)
                         .nOut(64)
                         .activation(Activation.TANH)
                         .build(), "concat")
