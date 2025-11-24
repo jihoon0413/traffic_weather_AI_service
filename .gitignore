@@ -167,6 +167,7 @@ fabric.properties
 *.nar
 *.ear
 *.zip
+*.png
 *.tar.gz
 *.rar
 
