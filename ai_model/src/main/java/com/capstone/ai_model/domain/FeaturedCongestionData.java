@@ -31,7 +31,6 @@ public class FeaturedCongestionData {
     private double wednesday;
     private double thursday;
     private double friday;
-    private double busId;
     private double stat_idx;
     private double morning;
     private double evening;
@@ -45,14 +44,14 @@ public class FeaturedCongestionData {
 
         return new FeaturedCongestionData(null, formatter.format(data.getDate()), temp[0], temp[1], temp[2], temp[3], temp[4], temp[5],
                 temp[6], temp[7], temp[8], temp[9], temp[10], temp[11],
-                temp[12], temp[13], temp[14], temp[15], temp[16], data.getMorningCongestion());
+                temp[12], temp[13], temp[14], temp[15], data.getMorningCongestion());
     }
 
     public static FeaturedCongestionData ofEvening(FeatureData data, DateTimeFormatter formatter) {
         double[] temp = data.getEveningFeature();
         return new FeaturedCongestionData(null, formatter.format(data.getDate()), temp[0], temp[1], temp[2], temp[3], temp[4], temp[5],
                 temp[6], temp[7], temp[8], temp[9], temp[10], temp[11],
-                temp[12], temp[13], temp[14], temp[15], temp[16], data.getEveningCongestion());
+                temp[12], temp[13], temp[14], temp[15], data.getEveningCongestion());
     }
 
 }

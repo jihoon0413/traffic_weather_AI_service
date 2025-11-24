@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class SequenceBuilder {
 
     private static final int TIME_SERIES_LENGTH = 15;
-    private static final int FEATURE_SIZE = 16;
+    private static final int FEATURE_SIZE = 15;
 
     public List<LSTMInput> buildSequencesByStation(List<FeaturedCongestionData> data) {
         List<LSTMInput> result = new ArrayList<>();
@@ -29,7 +29,8 @@ public class SequenceBuilder {
 
             stationData.sort(
                     Comparator.comparing(FeaturedCongestionData::getRecord_date)
-                            .thenComparing(FeaturedCongestionData::getMorning).reversed()
+                            .thenComparing(FeaturedCongestionData::getEvening)
+//                            .thenComparing(FeaturedCongestionData::getMorning).reversed()
             );
 
             List<FeaturedCongestionData> buffer = new ArrayList<>();
@@ -66,15 +67,17 @@ public class SequenceBuilder {
             features[0][7][t] = d.getWednesday();
             features[0][8][t] = d.getThursday();
             features[0][9][t] = d.getFriday();
-            features[0][10][t] = d.getBusId();
-            features[0][11][t] = d.getMorning();
-            features[0][12][t] = d.getEvening();
-            features[0][13][t] = d.getTemp();
-            features[0][14][t] = d.getPrecip();
-            features[0][15][t] = d.getSnow();
+            features[0][10][t] = d.getMorning();
+            features[0][11][t] = d.getEvening();
+            features[0][12][t] = d.getTemp();
+            features[0][13][t] = d.getPrecip();
+            features[0][14][t] = d.getSnow();
 
-            label[0][0] = d.getCongestion();
+
+//            label[0][0] = d.getCongestion();
         }
+        FeaturedCongestionData last = buffer.get(TIME_SERIES_LENGTH - 1);
+        label[0][0] = last.getCongestion();
 
         return new LSTMInput(
                 Nd4j.createFromArray(stationIndex),

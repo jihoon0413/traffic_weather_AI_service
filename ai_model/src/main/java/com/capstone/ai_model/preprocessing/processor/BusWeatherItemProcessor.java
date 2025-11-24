@@ -38,7 +38,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
 
         String morningKey = buildKey(item)+"morning";
         String eveningKey = buildKey(item)+"evening";
-        int featureSize = 5 + 5 + 1 + 1 + 2 + 3; //년월일, 요일, 버스ID, 정류장ID, 출퇴근시간, 온도, 1시간 강수량, 적설량
+        int featureSize = 5 + 5 + 1 + 2 + 3; //년월일, 요일, 버스ID, 정류장ID, 출퇴근시간, 온도, 1시간 강수량, 적설량
 
 
         double[] morningFeature = new double[featureSize];
@@ -59,9 +59,9 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         idx += oneHot.length;
 
         // 버스Id 추후에 여러개의 버스 학습시 임베딩을 위한 매핑 과정 필요
-        morningFeature[idx] = item.getBusId();
-        eveningFeature[idx] = item.getBusId();
-        idx++;
+//        morningFeature[idx] = item.getBusId();
+//        eveningFeature[idx] = item.getBusId();
+//        idx++;
 
         // statId
         int statIndex = item.getSeq(); // 정류장의 순서가 사실장 index역할 추가적인 매핑이 필요 없음
@@ -95,13 +95,11 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         eveningFeature[idx] = (item.getEvening_avg_snow_cm() - 0)/(maxSnow - 0);
 
         // 결과값
-        int morningCongestion = preCongestion.getOrDefault(morningKey, 0);
-        int eveningCongestion = preCongestion.getOrDefault(eveningKey, 0);
+        int morningCongestion = preCongestion.getOrDefault(morningKey, 0)+ item.getCommuteOnPassengers() - item.getCommuteOffPassengers();
+        int eveningCongestion = preCongestion.getOrDefault(eveningKey, 0)+ item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers();
 
-
-
-        preCongestion.put(morningKey, morningCongestion + item.getCommuteOnPassengers() - item.getCommuteOffPassengers());
-        preCongestion.put(eveningKey, eveningCongestion + item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers());
+        preCongestion.put(morningKey, morningCongestion);
+        preCongestion.put(eveningKey, eveningCongestion);
 
         double normalizedMorningCongestion = (double) morningCongestion /maxCongestion;
         double normalizedEveningCongestion = (double) eveningCongestion /maxCongestion;
@@ -121,8 +119,6 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         this.minTemp = context.getDouble("minTemp");
         this.maxPrecip = context.getDouble("maxPrecip");
         this.maxSnow = context.getDouble("maxSnow");
-
-//        log.info("{}  ,  {}  ,  {}  ,  {}  ,  {}  ,  {}" , maxCongestion, minCongestion, maxTemp, minTemp, maxPrecip, maxSnow);
     }
 
 
