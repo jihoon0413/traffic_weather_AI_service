@@ -27,8 +27,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'com.h2database:h2'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.knowm.xchart:xchart:3.8.1'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	runtimeOnly 'org.postgresql:postgresql'
 	// Deeplearning4j: 딥러닝 모델 학습 및 추론

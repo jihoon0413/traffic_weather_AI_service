@@ -7,14 +7,13 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.Histogram;
-import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 public class PlotUtils {
 
-    public static void plotRealVsPred(INDArray real, INDArray pred, String title) throws IOException {
+    public static byte[] lineChart(INDArray real, INDArray pred) throws IOException {
 
         List<Double> xData = new ArrayList<>();
         List<Double> realData = new ArrayList<>();
@@ -29,7 +28,7 @@ public class PlotUtils {
         XYChart chart = new XYChartBuilder()
                 .width(900)
                 .height(400)
-                .title(title)
+                .title("Real vs Predicted")
                 .xAxisTitle("Time Step")
                 .yAxisTitle("Congestion")
                 .build();
@@ -37,11 +36,10 @@ public class PlotUtils {
         chart.addSeries("Real", xData, realData);
         chart.addSeries("Predicted", xData, predData);
 
-        BitmapEncoder.saveBitmap(chart, "real_pred_chart", BitmapEncoder.BitmapFormat.PNG);
-//        new SwingWrapper<>(chart).displayChart();
+        return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
     }
 
-    public static void plotScatterRealPred(INDArray real, INDArray pred, String title) throws IOException {
+    public static byte[] scatterPlot(INDArray real, INDArray pred) throws IOException {
         List<Double> realData = new ArrayList<>();
         List<Double> predData = new ArrayList<>();
 
@@ -51,21 +49,20 @@ public class PlotUtils {
         }
 
         XYChart chart = new XYChartBuilder()
-                .width(500)
-                .height(500)
-                .title(title)
+                .width(600).height(600)
+                .title("Real vs Predicted Scatter")
                 .xAxisTitle("Real")
                 .yAxisTitle("Predicted")
                 .build();
 
         chart.addSeries("Points", realData, predData);
 
-        BitmapEncoder.saveBitmap(chart, "scatter-real-pred", BitmapEncoder.BitmapFormat.PNG);
-//        new SwingWrapper<>(chart).displayChart();
+        return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
     }
-    public static void plotResiduals(INDArray real, INDArray pred, String title) throws IOException {
-        List<Double> xData = new ArrayList<>();
+
+    public static byte[] residualPlot(INDArray real, INDArray pred) throws IOException {
         List<Double> residual = new ArrayList<>();
+        List<Double> xData = new ArrayList<>();
 
         for (int i = 0; i < real.length(); i++) {
             xData.add((double) i);
@@ -75,15 +72,17 @@ public class PlotUtils {
         XYChart chart = new XYChartBuilder()
                 .width(900)
                 .height(400)
-                .title(title)
+                .title("Residual Plot")
                 .xAxisTitle("Time Step")
                 .yAxisTitle("Residual (Real - Pred)")
                 .build();
 
         chart.addSeries("Residuals", xData, residual);
-        BitmapEncoder.saveBitmap(chart, "residuals", BitmapEncoder.BitmapFormat.PNG);
+
+        return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
     }
-    public static void plotResidualHistogram(INDArray real, INDArray pred, String title) throws IOException {
+
+    public static byte[] plotResidualHistogram(INDArray real, INDArray pred) throws IOException {
         List<Double> residual = new ArrayList<>();
 
         for (int i = 0; i < real.length(); i++) {
@@ -95,14 +94,14 @@ public class PlotUtils {
         CategoryChart chart = new CategoryChartBuilder()
                 .width(800)
                 .height(400)
-                .title(title)
+                .title("Residual Histogram")
                 .xAxisTitle("Residual")
                 .yAxisTitle("Count")
                 .build();
 
         chart.addSeries("Residual Dist", histogram.getxAxisData(), histogram.getyAxisData());
 
-        BitmapEncoder.saveBitmap(chart, "residual-histogram", BitmapEncoder.BitmapFormat.PNG);
+        return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
     }
 
 }

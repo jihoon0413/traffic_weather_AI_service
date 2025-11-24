@@ -9,10 +9,12 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JobRunner implements CommandLineRunner {
+public class JobRunner {
 
     private final JobLauncher jobLauncher;
 
@@ -31,8 +33,9 @@ public class JobRunner implements CommandLineRunner {
         this.busWeatherDataJob = busWeatherDataJob;
         this.trainingDataJob = trainingDataJob;
     }
-    @Override
-    public void run(String... args) throws Exception {
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void run() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addLong("time", System.currentTimeMillis())
                 .toJobParameters();
@@ -41,6 +44,13 @@ public class JobRunner implements CommandLineRunner {
 //        while (execution1.isRunning()) {
 //            Thread.sleep(1000); // 1초 대기
 //        }
-        jobLauncher.run(trainingDataJob, params);
+        JobExecution exec2 = jobLauncher.run(trainingDataJob, params);
+        waitForCompletion(exec2);
+    }
+
+    private void waitForCompletion(JobExecution exec) throws InterruptedException {
+        while (exec.isRunning()) {
+            Thread.sleep(1000);
+        }
     }
 }

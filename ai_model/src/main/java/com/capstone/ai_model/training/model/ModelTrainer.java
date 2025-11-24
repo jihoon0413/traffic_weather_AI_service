@@ -27,7 +27,7 @@ public class ModelTrainer {
     ) throws IOException {
         MultiDataSet trainData = mergeData(trainSummer, trainWinter);
 
-        for (int epoch = 0; epoch < 30; epoch++) {
+        for (int epoch = 0; epoch < 40; epoch++) {
             model.fit(trainData);
             System.out.println("Epoch = " + epoch + " 완료");
         }
