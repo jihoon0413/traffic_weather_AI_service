@@ -17,3 +17,6 @@ spring:
       enabled: false
 #    jdbc:
 #      initialize-schema: never
+
+open-api:
+  secret-key: ${SERVICE_KEY}

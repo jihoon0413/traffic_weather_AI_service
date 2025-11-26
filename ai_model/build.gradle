@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.knowm.xchart:xchart:3.8.1'
 	implementation 'org.jfree:jfreechart:1.5.4'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	runtimeOnly 'org.postgresql:postgresql'
 	// Deeplearning4j: 딥러닝 모델 학습 및 추론
