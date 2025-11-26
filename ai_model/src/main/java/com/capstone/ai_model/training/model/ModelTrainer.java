@@ -27,14 +27,12 @@ public class ModelTrainer {
     ) throws IOException {
         MultiDataSet trainData = mergeData(trainSummer, trainWinter);
 
-        for (int epoch = 0; epoch < 40; epoch++) {
+        for (int epoch = 0; epoch < 80; epoch++) {
             model.fit(trainData);
             System.out.println("Epoch = " + epoch + " 완료");
         }
 
         modelEvaluator.evaluateSeason(model, mergeData(testSummer, testWinter), "total");
-//        modelEvaluator.evaluateSeason(model, buildDataSet(testSummer), "SUMMER");
-//        modelEvaluator.evaluateSeason(model, buildDataSet(testWinter), "WINTER");
 
         model.save(new File("trained_lstm_model.zip"),true);
     }
@@ -54,7 +52,6 @@ public class ModelTrainer {
             stationList.add(input.getStatIdx());
             featureList.add(input.getFeatures());
             targetList.add(input.getTargets());
-
         }
 
         INDArray stationBatch = Nd4j.concat(0, stationList.toArray(new INDArray[0]));
@@ -65,28 +62,5 @@ public class ModelTrainer {
                 new INDArray[]{stationBatch, featureBatch},
                 new INDArray[]{targetBatch}
         );
-    }
-
-    private MultiDataSet buildDataSet(List<LSTMInput> testData) {
-
-        List<INDArray> stationList = new ArrayList<>();
-        List<INDArray> featureList = new ArrayList<>();
-        List<INDArray> targetList = new ArrayList<>();
-
-        for (LSTMInput input : testData) {
-            stationList.add(input.getStatIdx());
-            featureList.add(input.getFeatures());
-            targetList.add(input.getTargets());
-        }
-
-        INDArray stationBatch = Nd4j.concat(0, stationList.toArray(new INDArray[0]));
-        INDArray featureBatch = Nd4j.concat(0, featureList.toArray(new INDArray[0])); // [batch, FEATURE_SIZE, seqLength]
-        INDArray targetBatch = Nd4j.concat(0, targetList.toArray(new INDArray[0])); // [batch, 1, seqLength]
-
-        return new MultiDataSet(
-                new INDArray[]{stationBatch, featureBatch},
-                new INDArray[]{targetBatch}
-        );
-
     }
 }

@@ -1,6 +1,10 @@
 package com.capstone.ai_model.launcher;
 
+import com.capstone.ai_model.controller.PredictController;
+import com.capstone.ai_model.service.ChartService;
+import java.io.File;
 import lombok.AllArgsConstructor;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -17,6 +21,8 @@ import org.springframework.stereotype.Component;
 public class JobRunner {
 
     private final JobLauncher jobLauncher;
+    private final PredictController predictController;
+    private final ChartService chartService;
 
     @Qualifier("busWeatherDataJob")
     private final Job busWeatherDataJob;
@@ -25,11 +31,13 @@ public class JobRunner {
 
     @Autowired
     public JobRunner(
-            JobLauncher jobLauncher,
+            JobLauncher jobLauncher, PredictController predictController, ChartService chartService,
             @Qualifier("busWeatherDataJob") Job busWeatherDataJob,
             @Qualifier("trainingDataJob") Job trainingDataJob
     ) {
         this.jobLauncher = jobLauncher;
+        this.predictController = predictController;
+        this.chartService = chartService;
         this.busWeatherDataJob = busWeatherDataJob;
         this.trainingDataJob = trainingDataJob;
     }
@@ -44,8 +52,13 @@ public class JobRunner {
 //        while (execution1.isRunning()) {
 //            Thread.sleep(1000); // 1초 대기
 //        }
-        JobExecution exec2 = jobLauncher.run(trainingDataJob, params);
-        waitForCompletion(exec2);
+//        JobExecution exec2 = jobLauncher.run(trainingDataJob, params);
+//        waitForCompletion(exec2);
+
+        ComputationGraph model = ComputationGraph.load(new File("trained_lstm_model.zip"), true);
+        predictController.setModel(model);
+        chartService.setData();
+
     }
 
     private void waitForCompletion(JobExecution exec) throws InterruptedException {

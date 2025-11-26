@@ -1,9 +1,15 @@
 package com.capstone.ai_model.service;
 
 import com.capstone.ai_model.dto.EvaluationData;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +18,20 @@ import org.springframework.stereotype.Service;
 @Setter
 public class ChartService {
 
-    private INDArray realValues;
     private INDArray predValues;
+    private INDArray realValues;
 
-    public void setData(INDArray realValues, INDArray predValues) {
-        this.realValues = realValues;
-        this.predValues = predValues;
+    public void setData() throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        Map<String, Object> map = mapper.readValue(new File("prediction_data.json"), Map.class);
+
+        double[] pred = ((List<Double>) map.get("pred")).stream().mapToDouble(d -> d).toArray();
+        double[] real = ((List<Double>) map.get("real")).stream().mapToDouble(d -> d).toArray();
+
+        this.predValues = Nd4j.create(pred);
+        this.realValues = Nd4j.create(real);
     }
 
     public EvaluationData getEvaluation() {

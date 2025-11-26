@@ -29,6 +29,7 @@ dependencies {
 	implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.knowm.xchart:xchart:3.8.1'
+	implementation 'org.jfree:jfreechart:1.5.4'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	runtimeOnly 'org.postgresql:postgresql'
