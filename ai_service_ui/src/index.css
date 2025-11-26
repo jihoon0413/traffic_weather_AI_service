@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 150 20% 8%;
+    --foreground: 150 10% 95%;
+
+    --card: 150 18% 10%;
+    --card-foreground: 150 10% 95%;
+
+    --popover: 150 18% 10%;
+    --popover-foreground: 150 10% 95%;
+
+    --primary: 160 100% 50%;
+    --primary-foreground: 150 20% 8%;
+
+    --secondary: 150 15% 15%;
+    --secondary-foreground: 150 10% 95%;
+
+    --muted: 150 15% 12%;
+    --muted-foreground: 150 10% 60%;
+
+    --accent: 160 100% 50%;
+    --accent-foreground: 150 20% 8%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 140 80% 50%;
+    --success-foreground: 150 20% 8%;
+
+    --border: 150 20% 18%;
+    --input: 150 20% 15%;
+    --ring: 160 100% 50%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 150 22% 6%;
+    --sidebar-foreground: 150 10% 70%;
+    --sidebar-primary: 160 100% 50%;
+    --sidebar-primary-foreground: 150 20% 8%;
+    --sidebar-accent: 150 20% 12%;
+    --sidebar-accent-foreground: 150 10% 95%;
+    --sidebar-border: 150 20% 12%;
+    --sidebar-ring: 160 100% 50%;
+    
+    --chart-1: 160 100% 50%;
+    --chart-2: 200 100% 60%;
+    --chart-grid: 150 15% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.station-overlay {
+  background: white;
+  border: 1px solid #333;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
