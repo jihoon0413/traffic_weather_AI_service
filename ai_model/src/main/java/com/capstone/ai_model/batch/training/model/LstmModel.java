@@ -1,4 +1,4 @@
-package com.capstone.ai_model.training.model;
+package com.capstone.ai_model.batch.training.model;
 
 import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
 import org.deeplearning4j.nn.conf.GradientNormalization;

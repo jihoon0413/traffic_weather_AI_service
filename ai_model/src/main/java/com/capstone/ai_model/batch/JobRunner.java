@@ -1,9 +1,8 @@
-package com.capstone.ai_model.launcher;
+package com.capstone.ai_model.batch;
 
 import com.capstone.ai_model.controller.PredictController;
 import com.capstone.ai_model.service.ChartService;
 import java.io.File;
-import lombok.AllArgsConstructor;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -12,7 +11,6 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

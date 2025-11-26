@@ -1,4 +1,4 @@
-package com.capstone.ai_model.training.data;
+package com.capstone.ai_model.batch.training.data;
 
 import com.capstone.ai_model.domain.FeaturedCongestionData;
 import com.capstone.ai_model.dto.LSTMInput;

@@ -1,4 +1,4 @@
-package com.capstone.ai_model.config;
+package com.capstone.ai_model.batch;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

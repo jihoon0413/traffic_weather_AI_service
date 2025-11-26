@@ -1,10 +1,10 @@
-package com.capstone.ai_model.config;
+package com.capstone.ai_model.batch;
 
 import com.capstone.ai_model.dto.BusWeatherData;
 import com.capstone.ai_model.dto.FeatureData;
-import com.capstone.ai_model.preprocessing.processor.BusWeatherItemProcessor;
-import com.capstone.ai_model.preprocessing.processor.DataPreProcessor;
-import com.capstone.ai_model.preprocessing.writer.GenerateCongestionDataWriter;
+import com.capstone.ai_model.batch.preprocessing.processor.BusWeatherItemProcessor;
+import com.capstone.ai_model.batch.preprocessing.processor.DataPreProcessor;
+import com.capstone.ai_model.batch.preprocessing.writer.GenerateCongestionDataWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

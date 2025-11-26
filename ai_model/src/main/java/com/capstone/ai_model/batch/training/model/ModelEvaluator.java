@@ -1,4 +1,4 @@
-package com.capstone.ai_model.training.model;
+package com.capstone.ai_model.batch.training.model;
 
 import com.capstone.ai_model.service.ChartService;
 import com.fasterxml.jackson.databind.ObjectMapper;

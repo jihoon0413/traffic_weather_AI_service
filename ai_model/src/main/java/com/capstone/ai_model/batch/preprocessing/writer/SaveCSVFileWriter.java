@@ -1,4 +1,4 @@
-package com.capstone.ai_model.preprocessing.writer;
+package com.capstone.ai_model.batch.preprocessing.writer;
 
 import com.capstone.ai_model.domain.FeaturedCongestionData;
 import lombok.extern.slf4j.Slf4j;

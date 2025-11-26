@@ -1,4 +1,4 @@
-package com.capstone.ai_model.preprocessing.processor;
+package com.capstone.ai_model.batch.preprocessing.processor;
 
 import com.capstone.ai_model.dto.BusWeatherData;
 

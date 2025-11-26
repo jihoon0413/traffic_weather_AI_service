@@ -1,4 +1,4 @@
-package com.capstone.ai_model.preprocessing.reader;
+package com.capstone.ai_model.batch.preprocessing.reader;
 
 import com.capstone.ai_model.dto.BusWeatherData;
 import lombok.RequiredArgsConstructor;
