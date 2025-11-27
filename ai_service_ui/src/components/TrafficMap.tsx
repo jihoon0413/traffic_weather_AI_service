@@ -39,7 +39,7 @@ export const TrafficMap = ({ busStopInfo }) => {
   }, []);
 
   async function getRouteStations() {
-    const res = await axios.get("http://localhost:8080/api/station/9");
+    const res = await axios.get("http://localhost:8080/api/external/station/9");
     return res.data.BUSSTOP_LIST;
   }
 

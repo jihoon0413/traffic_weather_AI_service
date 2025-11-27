@@ -48,8 +48,7 @@ export const CongestionForecastPanel = ({ busStopData }: CongestionForecastPanel
           time: timeOfDay.toUpperCase()
         })
         
-     
-        const res = await axios.get(`http://localhost:8080/api/weather?${params.toString()}`);
+        const res = await axios.get(`http://localhost:8080/api/external/weather?${params.toString()}`);
         const data = res.data;
         console.log(data);
         setWeatherInfo(data)
@@ -82,9 +81,30 @@ export const CongestionForecastPanel = ({ busStopData }: CongestionForecastPanel
   };
 
   const predictCongestion = async () => {
-    console.log(busStopData.busStopId)
-  }
+    try {
+      const yyyy = selectedDate.getFullYear();
+      const mm = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const dd = String(selectedDate.getDate()).padStart(2, "0");
 
+      const formattedDate = `${yyyy}${mm}${dd}`;
+
+      const params = new URLSearchParams({
+        date: formattedDate,
+        stopId: String(busStopData.busStopId),
+        temp: String(weatherInfo.temp),
+        prec: String(weatherInfo.prec),
+        snow: String(weatherInfo.snow),
+        time: timeOfDay.toUpperCase()
+      })
+
+      const res = await axios.get(`http://localhost:8080/api/predict?${params.toString()}`);
+      console.log(res.data)
+      setCongestion(res.data)
+    } catch(err) {
+      console.error("Prediction API Error"); 
+    }
+  }
+  
   return (
     <div className="space-y-6">
       {/* Congestion Forecast */}
@@ -96,7 +116,6 @@ export const CongestionForecastPanel = ({ busStopData }: CongestionForecastPanel
           <div>
             <p className="text-sm text-muted-foreground mb-2">Predicted Level</p>
             <div className="flex items-baseline gap-2">
-              {/* <div className="w-3 h-3 rounded-full bg-success animate-pulse" /> */}
               <span className="text-5xl font-bold text-success">{congestion?? "-"}</span>
             </div>
           </div>
@@ -176,13 +195,12 @@ export const CongestionForecastPanel = ({ busStopData }: CongestionForecastPanel
           <button
             className="px-6 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/80 transition"
           onClick={predictCongestion}>
-            Search
+            Predict
           </button>
         </div>
       </CardContent>
     </Card>
 
-    
     </div>
   );
 };
