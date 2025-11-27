@@ -1,7 +1,10 @@
 package com.capstone.ai_model.batch.preprocessing.processor;
 
+import com.capstone.ai_model.domain.ModelMetaData;
 import com.capstone.ai_model.dto.BusWeatherData;
 
+import com.capstone.ai_model.repository.ModelMetaDataRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
 import org.nd4j.shade.jackson.databind.ObjectMapper;
@@ -20,10 +23,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @JobScope
 @Component
+@RequiredArgsConstructor
 public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeatherData> {
 
     private final Map<Integer, Integer> statIdMap = new ConcurrentHashMap<>();
     private final AtomicInteger idx = new AtomicInteger(0);
+    private final ModelMetaDataRepository modelMetaDataRepository;
 
     private final Map<String, Integer> preCongestion = new ConcurrentHashMap<>();
 
@@ -79,6 +84,8 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
         context.putDouble("maxPrecip", maxPrecip);
         context.putDouble("maxSnow", maxSnow);
 
+        ModelMetaData data = new ModelMetaData(null, maxCongestion, maxTemp, minTemp, maxPrecip, maxSnow);
+        modelMetaDataRepository.save(data);
         return ExitStatus.COMPLETED;
 
     }
