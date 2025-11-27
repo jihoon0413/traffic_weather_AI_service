@@ -13,12 +13,12 @@ declare global {
   }
 }
 
-export const TrafficMap = () => {
+export const TrafficMap = ({ busStopInfo }) => {
   const mapRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
 
-  const kakaoKey = `7bf6b6bf0b2543c7d19959be72310a49`;
+  const kakaoKey = import.meta.env.VITE_KAKAO_KEY;
 
   useEffect(() => {
 
@@ -82,11 +82,22 @@ export const TrafficMap = () => {
     });
 
     window.kakao.maps.event.addListener(marker, "click", () => {
-      console.log(`Clicked station ID: ${busStopId}`);     
+      fetchWeather(lat, lng, name, busStopId);   
     });
 
     return marker;
   }
+
+  const fetchWeather = async (lat, lng, name, busStopId) => {
+    
+    const data = {
+      lat: lat,
+      lng: lng,
+      name: name,
+      busStopId: busStopId,
+    }
+    busStopInfo(data);  // ⭐ 부모로 전달
+  };
 
   async function loadRoute() {
     if (!map) return;

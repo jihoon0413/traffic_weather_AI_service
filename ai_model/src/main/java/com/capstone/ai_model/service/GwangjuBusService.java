@@ -12,10 +12,8 @@ public class GwangjuBusService {
 
     private final WebClient webClient;
 
-    @Value("${open-api.secret-key}")
+    @Value("${open-api.bis-key}")
     private String secretKey;
-
-    private static final String BASE_URL = "http://api.gwangju.go.kr/xml/stationInfo";
 
 
     public Mono<String> getRouteList(String ars_id) {

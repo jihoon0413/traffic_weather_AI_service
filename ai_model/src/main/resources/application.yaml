@@ -19,4 +19,5 @@ spring:
 #      initialize-schema: never
 
 open-api:
-  secret-key: ${SERVICE_KEY}
+  bis-key: ${BIS_KEY}
+  weather-key: ${WEATHER_KEY}
