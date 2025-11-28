@@ -2,6 +2,7 @@ package com.capstone.ai_model.batch;
 
 import com.capstone.ai_model.controller.PredictController;
 import com.capstone.ai_model.service.ChartService;
+import com.capstone.ai_model.service.PredictService;
 import java.io.File;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.springframework.batch.core.Job;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class JobRunner {
 
     private final JobLauncher jobLauncher;
-    private final PredictController predictController;
+    private final PredictService predictService;
     private final ChartService chartService;
 
     @Qualifier("busWeatherDataJob")
@@ -29,12 +30,12 @@ public class JobRunner {
 
     @Autowired
     public JobRunner(
-            JobLauncher jobLauncher, PredictController predictController, ChartService chartService,
+            JobLauncher jobLauncher, PredictService predictService, ChartService chartService,
             @Qualifier("busWeatherDataJob") Job busWeatherDataJob,
             @Qualifier("trainingDataJob") Job trainingDataJob
     ) {
         this.jobLauncher = jobLauncher;
-        this.predictController = predictController;
+        this.predictService = predictService;
         this.chartService = chartService;
         this.busWeatherDataJob = busWeatherDataJob;
         this.trainingDataJob = trainingDataJob;
@@ -54,7 +55,7 @@ public class JobRunner {
 //        waitForCompletion(exec2);
 
         ComputationGraph model = ComputationGraph.load(new File("trained_lstm_model.zip"), true);
-        predictController.setModel(model);
+        predictService.setModel(model);
         chartService.setData();
 
     }

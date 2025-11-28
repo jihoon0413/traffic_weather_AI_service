@@ -2,10 +2,12 @@ package com.capstone.ai_model.batch.preprocessing.processor;
 
 import com.capstone.ai_model.dto.BusWeatherData;
 import com.capstone.ai_model.dto.FeatureData;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
-import org.nd4j.shade.jackson.core.type.TypeReference;
-import org.nd4j.shade.jackson.databind.ObjectMapper;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -13,18 +15,12 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Slf4j
 @Component
 @JobScope
 public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, FeatureData> {
 
     private static final List<String> DAYS = List.of("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY");
-    private Map<Integer, Integer> statIdMap = new ConcurrentHashMap<>();
     private final Map<String, Integer> preCongestion = new ConcurrentHashMap<>();
 
     private int maxCongestion;
@@ -64,7 +60,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
 //        idx++;
 
         // statId
-        int statIndex = item.getSeq(); // 정류장의 순서가 사실장 index역할 추가적인 매핑이 필요 없음
+        int statIndex = item.getSeq();
         morningFeature[idx] = statIndex;
         eveningFeature[idx] = statIndex;
         idx++;
@@ -95,8 +91,13 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         eveningFeature[idx] = (item.getEvening_avg_snow_cm() - 0)/(maxSnow - 0);
 
         // 결과값
-        int morningCongestion = preCongestion.getOrDefault(morningKey, 0)+ item.getCommuteOnPassengers() - item.getCommuteOffPassengers();
-        int eveningCongestion = preCongestion.getOrDefault(eveningKey, 0)+ item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers();
+
+        double correction = 1 / (1 - 0.43); //하차 비율 보정
+        double newCommuteOffPassengers = item.getCommuteOffPassengers()* correction;
+        double newOffPeakPassengers = item.getOffPeakOffPassengers()* correction;
+
+        int morningCongestion = (int) (preCongestion.getOrDefault(morningKey, 0)+ item.getCommuteOnPassengers() - newCommuteOffPassengers);
+        int eveningCongestion = (int) (preCongestion.getOrDefault(eveningKey, 0)+ item.getOffPeakOnPassengers() - newOffPeakPassengers);
 
         preCongestion.put(morningKey, morningCongestion);
         preCongestion.put(eveningKey, eveningCongestion);
@@ -104,7 +105,7 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
         double normalizedMorningCongestion = (double) morningCongestion /maxCongestion;
         double normalizedEveningCongestion = (double) eveningCongestion /maxCongestion;
 
-//        log.info("{} : {}, {} : {} ", morningKey, morningCongestion, eveningKey, eveningCongestion);
+        log.info("{} : {}, {} : {} ", morningKey, morningCongestion, eveningKey, eveningCongestion);
 
         return new FeatureData(item.getDate(), morningFeature, normalizedMorningCongestion, eveningFeature, normalizedEveningCongestion);
     }
@@ -112,15 +113,12 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
     @BeforeStep
     public void loadStatus(StepExecution stepExecution) throws JsonProcessingException {
         ExecutionContext context = stepExecution.getJobExecution().getExecutionContext();
-        String json = context.getString("statIdMapJson");
-        this.statIdMap = new ObjectMapper().readValue(json, new TypeReference<>(){});
         this.maxCongestion = context.getInt("maxCongestion");
         this.maxTemp = context.getDouble("maxTemp");
         this.minTemp = context.getDouble("minTemp");
         this.maxPrecip = context.getDouble("maxPrecip");
         this.maxSnow = context.getDouble("maxSnow");
     }
-
 
     private String buildKey(BusWeatherData data) {
         return data.getDate() + "_" + data.getBusId() + "_";

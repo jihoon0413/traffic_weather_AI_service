@@ -2,8 +2,9 @@ package com.capstone.ai_model.batch.preprocessing.processor;
 
 import com.capstone.ai_model.domain.ModelMetaData;
 import com.capstone.ai_model.dto.BusWeatherData;
-
 import com.capstone.ai_model.repository.ModelMetaDataRepository;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.nd4j.shade.jackson.core.JsonProcessingException;
@@ -16,10 +17,6 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Slf4j
 @JobScope
 @Component
@@ -27,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeatherData> {
 
     private final Map<Integer, Integer> statIdMap = new ConcurrentHashMap<>();
-    private final AtomicInteger idx = new AtomicInteger(0);
     private final ModelMetaDataRepository modelMetaDataRepository;
 
     private final Map<String, Integer> preCongestion = new ConcurrentHashMap<>();
@@ -49,10 +45,14 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
         String morningKey = buildKey(item)+"morning";
         String eveningKey = buildKey(item)+"evening";
 
-        int morningCongestion = preCongestion.getOrDefault(morningKey, 0) + item.getCommuteOnPassengers() - item.getCommuteOffPassengers();
-        int eveningCongestion = preCongestion.getOrDefault(eveningKey, 0) + item.getOffPeakOnPassengers() - item.getOffPeakOffPassengers();
+        double correction = 1 / (1 - 0.43);
+        double newCommuteOffPassengers = item.getCommuteOffPassengers()* correction;
+        double newOffPeakPassengers = item.getOffPeakOffPassengers()* correction;
 
-        // TODO: 하차시 카드를 찍지 않는 경우 보정 필요
+        int morningCongestion = (int) (preCongestion.getOrDefault(morningKey, 0) + item.getCommuteOnPassengers() - newCommuteOffPassengers);
+        int eveningCongestion = (int) (preCongestion.getOrDefault(eveningKey, 0) + item.getOffPeakOnPassengers() - newOffPeakPassengers);
+
+
 //        log.info("morningCongestion {} : {}", morningKey , morningCongestion);
         preCongestion.put(morningKey, morningCongestion);
         preCongestion.put(eveningKey, eveningCongestion);
@@ -74,8 +74,6 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
     public ExitStatus saveStatus(StepExecution stepExecution) throws JsonProcessingException {
         ExecutionContext context = stepExecution.getJobExecution().getExecutionContext();
         String json = new ObjectMapper().writeValueAsString(statIdMap);
-        // 버스 추가시 버스코드 Map 추가
-        // TODO: 정규화, 임베딩에 필요한 데이터를 외부에 공유할 수 있는 방법 고민하기
 
         context.putString("statIdMapJson", json);
         context.putInt("maxCongestion", maxCongestion);
@@ -86,8 +84,8 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
 
         ModelMetaData data = new ModelMetaData(null, maxCongestion, maxTemp, minTemp, maxPrecip, maxSnow);
         modelMetaDataRepository.save(data);
-        return ExitStatus.COMPLETED;
 
+        return ExitStatus.COMPLETED;
     }
 
     private String buildKey(BusWeatherData data) {
