@@ -41,7 +41,6 @@ public class FeaturedCongestionData {
 
     public static FeaturedCongestionData ofMorning(FeatureData data, DateTimeFormatter formatter) {
         double[] temp = data.getMorningFeature();
-
         return new FeaturedCongestionData(null, formatter.format(data.getDate()), temp[0], temp[1], temp[2], temp[3], temp[4], temp[5],
                 temp[6], temp[7], temp[8], temp[9], temp[10], temp[11],
                 temp[12], temp[13], temp[14], temp[15], data.getMorningCongestion());

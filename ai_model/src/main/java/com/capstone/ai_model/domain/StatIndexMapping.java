@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class stat_index_mapping {
+public class StatIndexMapping {
 
     @Id
     private Integer statId;
