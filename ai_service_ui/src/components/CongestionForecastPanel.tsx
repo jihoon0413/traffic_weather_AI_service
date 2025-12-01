@@ -5,7 +5,7 @@ import { Cloud, Droplets, Snowflake, CalendarIcon, ChevronLeft, ChevronRight } f
 import { useEffect, useState } from "react";
 import { format, set } from "date-fns";
 import { ko } from "date-fns/locale";
-import TimeOfDayToggle from "./ui/timeOfDayToggle";
+import TimeOfDayToggle from "./ui/time-df-day-toggle";
 import axios from "axios";
 
 interface CongestionForecastPanelProps {busStopData: {
