@@ -45,12 +45,18 @@ public class DataPreProcessor implements ItemProcessor<BusWeatherData, BusWeathe
         String morningKey = buildKey(item)+"morning";
         String eveningKey = buildKey(item)+"evening";
 
-        double correction = 1 / (1 - 0.43);
+        double correction = 1 / (1 - 0.57);
         double newCommuteOffPassengers = item.getCommuteOffPassengers()* correction;
         double newOffPeakPassengers = item.getOffPeakOffPassengers()* correction;
 
-        int morningCongestion = (int) (preCongestion.getOrDefault(morningKey, 0) + item.getCommuteOnPassengers() - newCommuteOffPassengers);
-        int eveningCongestion = (int) (preCongestion.getOrDefault(eveningKey, 0) + item.getOffPeakOnPassengers() - newOffPeakPassengers);
+        int morningRawCongestion = preCongestion.getOrDefault(morningKey, 0);
+        int eveningRawCongestion = preCongestion.getOrDefault(eveningKey, 0);
+
+        morningRawCongestion = Math.max(morningRawCongestion, 0);
+        eveningRawCongestion = Math.max(eveningRawCongestion, 0);
+
+        int morningCongestion = (int) (morningRawCongestion - newCommuteOffPassengers + item.getCommuteOnPassengers());
+        int eveningCongestion = (int) (eveningRawCongestion - newOffPeakPassengers + item.getOffPeakOnPassengers());
 
 
 //        log.info("morningCongestion {} : {}", morningKey , morningCongestion);

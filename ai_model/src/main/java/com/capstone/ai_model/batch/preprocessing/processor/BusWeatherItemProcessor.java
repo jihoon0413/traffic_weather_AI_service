@@ -92,12 +92,18 @@ public class BusWeatherItemProcessor implements ItemProcessor<BusWeatherData, Fe
 
         // 결과값
 
-        double correction = 1 / (1 - 0.43); //하차 비율 보정
+        double correction = 1 / (1 - 0.57); //하차 비율 보정
         double newCommuteOffPassengers = item.getCommuteOffPassengers()* correction;
         double newOffPeakPassengers = item.getOffPeakOffPassengers()* correction;
 
-        int morningCongestion = (int) (preCongestion.getOrDefault(morningKey, 0)+ item.getCommuteOnPassengers() - newCommuteOffPassengers);
-        int eveningCongestion = (int) (preCongestion.getOrDefault(eveningKey, 0)+ item.getOffPeakOnPassengers() - newOffPeakPassengers);
+        int morningRawCongestion = preCongestion.getOrDefault(morningKey, 0);
+        int eveningRawCongestion = preCongestion.getOrDefault(eveningKey, 0);
+
+        morningRawCongestion = Math.max(morningRawCongestion, 0);
+        eveningRawCongestion = Math.max(eveningRawCongestion, 0);
+
+        int morningCongestion = (int) (morningRawCongestion - newCommuteOffPassengers + item.getCommuteOnPassengers());
+        int eveningCongestion = (int) (eveningRawCongestion - newOffPeakPassengers + item.getOffPeakOnPassengers());
 
         preCongestion.put(morningKey, morningCongestion);
         preCongestion.put(eveningKey, eveningCongestion);

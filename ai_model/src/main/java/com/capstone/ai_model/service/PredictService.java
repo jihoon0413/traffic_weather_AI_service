@@ -62,7 +62,7 @@ public class PredictService {
         INDArray[] output = model.output(new INDArray[]{stationArr, featureArr});
 
         double y_pred = output[0].getDouble(0, 0, TIME_SERIES_LENGTH - 1);
-        double predictResult = Math.round(((y_pred * metaData.getMaxCongestion())/16)*100)/100.0;
+        double predictResult = Math.round(((y_pred * metaData.getMaxCongestion())/13)*100)/100.0;
         return predictResult < 0 ? 0.0 : predictResult;
     }
 
