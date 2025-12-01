@@ -59,10 +59,4 @@ public class ChartController {
         return ResponseEntity.ok().body(chartService.getEvaluation());
     }
 
-    @GetMapping("/temp")
-    public ResponseEntity<byte[]> temp() throws IOException {
-        return pngResponse(
-                PlotUtils.matlabScatterChart(chartService.getRealValues(), chartService.getPredValues())
-        );
-    }
 }

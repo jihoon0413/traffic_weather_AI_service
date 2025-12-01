@@ -1,20 +1,21 @@
 package com.capstone.ai_model.utils;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Paint;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.jfree.chart.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYDotRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.data.xy.*;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
@@ -56,50 +57,52 @@ public class PlotUtils {
         double[] real = realValues.toDoubleVector();
         double[] pred = predValues.toDoubleVector();
 
-        XYSeries series = new XYSeries("Pred vs Real");
-
+        XYSeries series = new XYSeries("Pred vs Real", false);
         for (int i = 0; i < real.length; i++) {
-            series.add(real[i],pred[i]);
+            series.add(real[i], pred[i]);
         }
         XYDataset dataset = new XYSeriesCollection(series);
 
+        // 2. scatter chart 생성
         JFreeChart chart = ChartFactory.createScatterPlot(
-                "Predicted vs Real",
-                "Real",
-                "Pred",
+                "Scatter Plot of Actual vs Predicted Values", // 논문용 제목
+                "Actual (Real)",
+                "Predicted (Pred)",
                 dataset
         );
 
-        // (선택) 점 크기, 색상 조절
         XYPlot plot = chart.getXYPlot();
+
+        // 3. 점 스타일 개선 (크기 + 투명도)
         XYDotRenderer renderer = new XYDotRenderer();
         renderer.setDotHeight(3);
         renderer.setDotWidth(3);
+        renderer.setSeriesPaint(0, new Color(255, 0, 0, 80));  // 빨강 + alpha(80)
         plot.setRenderer(renderer);
+
+        // 4. y = x 대각선 추가 (reference line)
+        double min = Math.min(Arrays.stream(real).min().orElse(0),
+                Arrays.stream(pred).min().orElse(0));
+        double max = Math.max(Arrays.stream(real).max().orElse(1),
+                Arrays.stream(pred).max().orElse(1));
+
+        XYLineAnnotation diagonal = new XYLineAnnotation(
+                min, min,     // 시작점 (x=min, y=min)
+                max, max,     // 끝점 (x=max, y=max)
+                new BasicStroke(1f),
+                new Color(0, 0, 0, 120)  // 얇은 회색(투명)
+        );
+        plot.addAnnotation(diagonal);
+
+        // 5. Grid/Plot 스타일 미세 조정 (선택)
+        plot.setBackgroundPaint(new Color(245, 245, 245));
+        plot.setDomainGridlinePaint(Color.GRAY);
+        plot.setRangeGridlinePaint(Color.GRAY);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ChartUtils.writeChartAsPNG(out, chart, 800, 600);
         return out.toByteArray();
 
-
-//        List<Double> realData = new ArrayList<>();
-//        List<Double> predData = new ArrayList<>();
-//
-//        for (int i = 0; i < real.length(); i++) {
-//            realData.add(real.getDouble(i));
-//            predData.add(pred.getDouble(i));
-//        }
-//
-//        XYChart chart = new XYChartBuilder()
-//                .width(600).height(600)
-//                .title("Real vs Predicted Scatter")
-//                .xAxisTitle("Real")
-//                .yAxisTitle("Predicted")
-//                .build();
-//
-//        chart.addSeries("Points", realData, predData);
-//
-//        return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
     }
 
     public static byte[] residualPlot(INDArray real, INDArray pred) throws IOException {
@@ -128,15 +131,15 @@ public class PlotUtils {
         List<Double> residual = new ArrayList<>();
 
         for (int i = 0; i < real.length(); i++) {
-            residual.add(real.getDouble(i) - pred.getDouble(i));
+            residual.add(Math.round((real.getDouble(i) - pred.getDouble(i))*100)/100.0);
         }
 
         Histogram histogram = new Histogram(residual, 20);
 
         CategoryChart chart = new CategoryChartBuilder()
-                .width(800)
-                .height(400)
-                .title("Residual Histogram")
+                .width(1600)
+                .height(800)
+                .title("Distribution of Prediction Residuals")
                 .xAxisTitle("Residual")
                 .yAxisTitle("Count")
                 .build();
@@ -144,82 +147,6 @@ public class PlotUtils {
         chart.addSeries("Residual Dist", histogram.getxAxisData(), histogram.getyAxisData());
 
         return BitmapEncoder.getBitmapBytes(chart, BitmapEncoder.BitmapFormat.PNG);
-    }
-
-    public static byte[] matlabScatterChart(INDArray realValues, INDArray predValues) throws IOException {
-        double[] real = realValues.toDoubleVector();
-        double[] pred = predValues.toDoubleVector();
-
-        // 1. 밀도 계산
-        double[] density = DensityUtil.computeDensity(real, pred, 1.5);
-
-        double maxD = Arrays.stream(density).max().orElse(1);
-        double minD = Arrays.stream(density).min().orElse(0);
-
-        // 2. Dataset 생성
-        XYSeries series = new XYSeries("Data");
-        for (int i = 0; i < real.length; i++) {
-            series.add(real[i], pred[i]);
-        }
-        XYDataset dataset = new XYSeriesCollection(series);
-
-        // 3. Scatter Plot 생성
-        JFreeChart chart = ChartFactory.createScatterPlot(
-                "Predicted vs Real (Density)",
-                "Real",
-                "Pred",
-                dataset
-        );
-
-        XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(Color.white);
-
-        // 4. 점 색상 밀도 기반 적용
-        plot.setRenderer(new XYDotRenderer() {
-            @Override
-            public Paint getItemPaint(int row, int col) {
-                double norm = (density[col] - minD) / (maxD - minD);
-                return ColorMapUtil.jet(norm);
-            }
-        });
-
-        // 5. 회귀선 추가
-        double[] coef = Regression.linearRegression(real, pred);
-        double a = coef[0], b = coef[1];
-
-        XYSeries line = new XYSeries("Regression");
-        double minX = Arrays.stream(real).min().orElse(0);
-        double maxX = Arrays.stream(real).max().orElse(1);
-
-        line.add(minX, a * minX + b);
-        line.add(maxX, a * maxX + b);
-
-        XYSeriesCollection lineDataset = new XYSeriesCollection(line);
-        XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer(true, false);
-        renderer2.setSeriesPaint(0, Color.BLACK);
-
-        plot.setDataset(1, lineDataset);
-        plot.setRenderer(1, renderer2);
-
-        // 6. R2, RMSE 표시
-        double[] yHat = new double[pred.length];
-        for (int i = 0; i < pred.length; i++)
-            yHat[i] = a * real[i] + b;
-
-        double r2 = Regression.r2(pred, yHat);
-        double rmse = Regression.rmse(pred, yHat);
-
-        TextTitle info = new TextTitle(
-                String.format("y = %.2fx + %.2f\nR² = %.3f, RMSE = %.3f", a, b, r2, rmse)
-        );
-        info.setFont(new Font("Arial", Font.PLAIN, 12));
-        info.setPosition(RectangleEdge.TOP);
-        chart.addSubtitle(info);
-
-        // 7. 이미지 반환
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ChartUtils.writeChartAsPNG(out, chart, 900, 700);
-        return out.toByteArray();
     }
 
 }
