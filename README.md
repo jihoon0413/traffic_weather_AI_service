@@ -25,34 +25,6 @@ Deeplearning4j 기반 LSTM(Long Short-Term Memory) 모델을 학습시켰습니�
 | **XChart / JFreeChart** | 모델 학습 및 예측 결과를 시각적으로 분석(라인 차트, 비교 그래프 등) |
 | **React** | 예측 결과와 모델 분석 정보를 UI로 시각화 |
 
-
-# 🖼️ 사진 자료
-
-<details>
-<summary>테스트 결과 </summary>
-<div markdown="1">
-  
-  * real vs predict
-<img width="900" height="400" alt="image" src="https://github.com/user-attachments/assets/118da1e2-1e0a-44e6-bd38-f201f8ee5c8f" />
-  
-  * predict scatter
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/8c25312a-a877-4e92-8faa-6960d77f4272" />
-
-</div>
-</details>
-
-<details>
-<summary>학습 데이터 이미지</summary> 
-<div markdown="1">
-  
-  * 승차 및 기상 데이터
-<img width="1275" height="484" alt="img" src="https://github.com/user-attachments/assets/871754c0-730b-4096-bf49-04a80c440fd9" />
-
-  * 전처리를 거친 feature 데이터
-<img width="1432" height="619" alt="img_1" src="https://github.com/user-attachments/assets/02d8f52e-6ece-437d-b0e8-e04ca7120b76" />
-</div>
-</details>
-
 # 🔍 문제 및 해결
 
 실제 승·하차 데이터에서 **하차 승객의 미등록률로 인해 실제 혼잡도보다 낮게 집계되는 문제**를 발견했습니다.
@@ -83,6 +55,34 @@ Deeplearning4j 기반 LSTM(Long Short-Term Memory) 모델을 학습시켰습니�
 | R² | 0.880 | 0.778 |
 
 보정 후 전반적으로 성능이 떨어졌지만 이는 버스 정류장을 각 특성에 맞게 보정한 것이 아니라 일괄적으로 보정했기 때문에 성능이 떨어진 것으로 추측됩니다. 하지만 문제 해결 과정에서 확인했던 것처럼 모델의 현실성을 높일 수 있었습니다.
+
+
+# 🖼️ 사진 자료
+
+<details>
+<summary>테스트 결과 </summary>
+<div markdown="1">
+  
+  * real vs predict
+<img width="900" height="400" alt="image" src="https://github.com/user-attachments/assets/118da1e2-1e0a-44e6-bd38-f201f8ee5c8f" />
+  
+  * predict scatter
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/8c25312a-a877-4e92-8faa-6960d77f4272" />
+
+</div>
+</details>
+
+<details>
+<summary>학습 데이터 이미지</summary> 
+<div markdown="1">
+  
+  * 승차 및 기상 데이터
+<img width="1275" height="484" alt="img" src="https://github.com/user-attachments/assets/871754c0-730b-4096-bf49-04a80c440fd9" />
+
+  * 전처리를 거친 feature 데이터
+<img width="1432" height="619" alt="img_1" src="https://github.com/user-attachments/assets/02d8f52e-6ece-437d-b0e8-e04ca7120b76" />
+</div>
+</details>
 
 # 📬 향후 개선 계획
 
