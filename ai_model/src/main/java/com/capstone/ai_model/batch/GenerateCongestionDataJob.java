@@ -47,7 +47,7 @@ public class GenerateCongestionDataJob {
                                       DataPreProcessor processor,
                                       BusWeatherDataItemWriter writer) {
         return new StepBuilder("busWeatherDataPreStep", jobRepository)
-                .<BusWeatherData, BusWeatherData>chunk(10, platformTransactionManager)
+                .<BusWeatherData, BusWeatherData>chunk(1000, platformTransactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -59,7 +59,7 @@ public class GenerateCongestionDataJob {
                                    BusWeatherItemProcessor processor,
                                    GenerateCongestionDataWriter writer) {
         return new StepBuilder("busWeatherDataStep", jobRepository)
-                .<BusWeatherData, FeatureData>chunk(10, platformTransactionManager)
+                .<BusWeatherData, FeatureData>chunk(1000, platformTransactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
